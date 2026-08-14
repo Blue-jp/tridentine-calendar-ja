@@ -10,6 +10,14 @@ from pathlib import Path
 import re
 import zipfile
 
+from build_pages_artifact import (
+    TEST_FEED_DESCRIPTION,
+    TEST_FEED_DTSTAMP,
+    TEST_FEED_REQUIRED_LINES,
+    TEST_FEED_SUMMARY,
+    TEST_FEED_UID,
+    canonicalize_test_feed,
+)
 from validate_release_assets import (
     EXPECTED_EVENTS,
     INTEGRATED_EVENT_COUNT,
@@ -48,9 +56,6 @@ PRIVACY_MARKERS = (
 EMAIL_PATTERN = re.compile(
     r"(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
 )
-TEST_FEED_UID = "subscription-refresh-test-1@blue-jp.github.io"
-TEST_FEED_DTSTAMP = "20260814T114306Z"
-TEST_FEED_SUMMARY = "購読更新テスト v1"
 
 
 def email_scan_text(label: str, text: str) -> str:
@@ -129,6 +134,12 @@ def validate_text_files(site: Path) -> None:
 def validate_test_feed(site: Path) -> None:
     path = site / "test" / "subscription-test.ics"
     data = path.read_bytes()
+    if not data.endswith(b"\r\n"):
+        raise ValidationError("Test feed does not end with CRLF")
+    without_crlf = data.replace(b"\r\n", b"")
+    if b"\r" in without_crlf or b"\n" in without_crlf:
+        raise ValidationError("Test feed contains a non-CRLF line ending")
+
     audit = audit_ics(data, 2026)
     require_clean_ics(audit, 1)
     event = audit["events"][0]
@@ -138,7 +149,7 @@ def validate_test_feed(site: Path) -> None:
         "DTSTART": "20260816",
         "DTEND": "20260817",
         "SUMMARY": TEST_FEED_SUMMARY,
-        "DESCRIPTION": "固定URL購読の自動更新確認用テストです。",
+        "DESCRIPTION": TEST_FEED_DESCRIPTION,
         "SEQUENCE": "0",
     }
     for key, value in expected.items():
@@ -146,22 +157,23 @@ def validate_test_feed(site: Path) -> None:
             raise ValidationError(f"Test feed {key} mismatch")
 
     text = data.decode("utf-8", errors="strict")
-    lines = set(text.split("\r\n"))
-    required_lines = {
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//Blue-jp//Subscription Refresh Test//EN",
-        "CALSCALE:GREGORIAN",
-        "BEGIN:VEVENT",
-        "END:VEVENT",
-        "END:VCALENDAR",
-    }
-    if not required_lines.issubset(lines):
+    lines = text.split("\r\n")
+    if not TEST_FEED_REQUIRED_LINES.issubset(lines):
         raise ValidationError("Test feed calendar envelope mismatch")
     if "DTSTART;VALUE=DATE:20260816\r\n" not in text:
         raise ValidationError("Test feed DTSTART is not an all-day date")
     if "DTEND;VALUE=DATE:20260817\r\n" not in text:
         raise ValidationError("Test feed DTEND is not an all-day date")
+
+    logical = "\n".join(lines[:-1]) + "\n"
+    lf_artifact = canonicalize_test_feed(logical.encode("utf-8"))
+    crlf_artifact = canonicalize_test_feed(
+        logical.replace("\n", "\r\n").encode("utf-8")
+    )
+    if lf_artifact != crlf_artifact or lf_artifact != data:
+        raise ValidationError(
+            "Test feed line-ending output is not deterministic"
+        )
 
 
 def validate(

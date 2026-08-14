@@ -12,10 +12,27 @@ import zipfile
 from validate_release_assets import (
     ValidationError,
     YEARS,
+    audit_ics,
     load_json,
     release_asset_names,
+    require_clean_ics,
     sha256,
 )
+
+
+TEST_FEED_UID = "subscription-refresh-test-1@blue-jp.github.io"
+TEST_FEED_DTSTAMP = "20260814T114306Z"
+TEST_FEED_SUMMARY = "購読更新テスト v1"
+TEST_FEED_DESCRIPTION = "固定URL購読の自動更新確認用テストです。"
+TEST_FEED_REQUIRED_LINES = {
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Blue-jp//Subscription Refresh Test//EN",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    "END:VEVENT",
+    "END:VCALENDAR",
+}
 
 
 def prepare_output(path: Path) -> None:
@@ -27,6 +44,48 @@ def prepare_output(path: Path) -> None:
 def copy_bytes(source: Path, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_bytes(source.read_bytes())
+
+
+def canonicalize_test_feed(data: bytes) -> bytes:
+    try:
+        text = data.decode("utf-8", errors="strict")
+    except UnicodeError as exc:
+        raise ValidationError("Test feed source is not UTF-8") from exc
+    if text.startswith("\ufeff"):
+        raise ValidationError("Test feed source has a UTF-8 BOM")
+
+    normalized = text.replace("\r\n", "\n")
+    if "\r" in normalized:
+        raise ValidationError("Test feed source contains a bare CR")
+    lines = normalized.split("\n")
+    if lines and lines[-1] == "":
+        lines.pop()
+    if not TEST_FEED_REQUIRED_LINES.issubset(lines):
+        raise ValidationError("Test feed source calendar envelope mismatch")
+
+    audit = audit_ics(data, 2026)
+    require_clean_ics(audit, 1)
+    event = audit["events"][0]
+    expected = {
+        "UID": TEST_FEED_UID,
+        "DTSTAMP": TEST_FEED_DTSTAMP,
+        "DTSTART": "20260816",
+        "DTEND": "20260817",
+        "SUMMARY": TEST_FEED_SUMMARY,
+        "DESCRIPTION": TEST_FEED_DESCRIPTION,
+        "SEQUENCE": "0",
+    }
+    for key, value in expected.items():
+        if event.get(key) != [value]:
+            raise ValidationError(f"Test feed source {key} mismatch")
+    if "DTSTART;VALUE=DATE:20260816" not in lines:
+        raise ValidationError(
+            "Test feed source DTSTART is not an all-day date"
+        )
+    if "DTEND;VALUE=DATE:20260817" not in lines:
+        raise ValidationError("Test feed source DTEND is not an all-day date")
+
+    return ("\r\n".join(lines) + "\r\n").encode("utf-8", errors="strict")
 
 
 def build(repository: Path, assets: Path, output: Path, accepted_tag: str) -> dict:
@@ -44,9 +103,12 @@ def build(repository: Path, assets: Path, output: Path, accepted_tag: str) -> di
         repository / "calendar" / "index.html",
         output / "calendar" / "index.html",
     )
-    copy_bytes(
-        repository / "test" / "subscription-test.ics",
-        output / "test" / "subscription-test.ics",
+    test_feed = output / "test" / "subscription-test.ics"
+    test_feed.parent.mkdir(parents=True, exist_ok=True)
+    test_feed.write_bytes(
+        canonicalize_test_feed(
+            (repository / "test" / "subscription-test.ics").read_bytes()
+        )
     )
 
     names = release_asset_names(accepted_tag)
