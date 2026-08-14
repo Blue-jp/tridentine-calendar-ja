@@ -20,8 +20,6 @@ jobs:
       pages: read
     env:
       ACCEPTED_TAG: ${{ inputs.accepted_tag }}
-      ASSET_DIR: ${{ runner.temp }}/accepted-release
-      SITE_DIR: ${{ runner.temp }}/pages-site
     steps:
       - name: Check out distribution source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -33,27 +31,27 @@ jobs:
         run: >-
           python scripts/fetch_release_assets.py
           --accepted-tag "$ACCEPTED_TAG"
-          --output "$ASSET_DIR"
+          --output "$RUNNER_TEMP/accepted-release"
 
       - name: Validate Release assets
         run: >-
           python scripts/validate_release_assets.py
-          --assets "$ASSET_DIR"
+          --assets "$RUNNER_TEMP/accepted-release"
           --accepted-tag "$ACCEPTED_TAG"
 
       - name: Build Pages artifact
         run: >-
           python scripts/build_pages_artifact.py
           --repository .
-          --assets "$ASSET_DIR"
-          --output "$SITE_DIR"
+          --assets "$RUNNER_TEMP/accepted-release"
+          --output "$RUNNER_TEMP/pages-site"
           --accepted-tag "$ACCEPTED_TAG"
 
       - name: Validate Pages artifact
         run: >-
           python scripts/validate_pages_output.py
-          --site "$SITE_DIR"
-          --assets "$ASSET_DIR"
+          --site "$RUNNER_TEMP/pages-site"
+          --assets "$RUNNER_TEMP/accepted-release"
           --accepted-tag "$ACCEPTED_TAG"
 
       - name: Upload Pages artifact
