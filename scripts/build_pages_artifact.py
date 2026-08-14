@@ -44,6 +44,10 @@ def build(repository: Path, assets: Path, output: Path, accepted_tag: str) -> di
         repository / "calendar" / "index.html",
         output / "calendar" / "index.html",
     )
+    copy_bytes(
+        repository / "test" / "subscription-test.ics",
+        output / "test" / "subscription-test.ics",
+    )
 
     names = release_asset_names(accepted_tag)
     google_path = output / "calendar" / "google.ics"

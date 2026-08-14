@@ -48,6 +48,9 @@ PRIVACY_MARKERS = (
 EMAIL_PATTERN = re.compile(
     r"(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
 )
+TEST_FEED_UID = "subscription-refresh-test-1@blue-jp.github.io"
+TEST_FEED_DTSTAMP = "20260814T114306Z"
+TEST_FEED_SUMMARY = "購読更新テスト v1"
 
 
 def email_scan_text(label: str, text: str) -> str:
@@ -97,6 +100,7 @@ def expected_site_files() -> set[str]:
         "calendar/plain.ics",
         "calendar/provenance.json",
         "calendar/checksums.txt",
+        "test/subscription-test.ics",
     }
     for year in YEARS:
         files.add(f"calendar/by-year/{year}-html.ics")
@@ -120,6 +124,44 @@ def validate_text_files(site: Path) -> None:
         findings.extend(privacy_findings(relative, text))
     if findings:
         raise ValidationError("Privacy scan failed: " + "; ".join(findings))
+
+
+def validate_test_feed(site: Path) -> None:
+    path = site / "test" / "subscription-test.ics"
+    data = path.read_bytes()
+    audit = audit_ics(data, 2026)
+    require_clean_ics(audit, 1)
+    event = audit["events"][0]
+    expected = {
+        "UID": TEST_FEED_UID,
+        "DTSTAMP": TEST_FEED_DTSTAMP,
+        "DTSTART": "20260816",
+        "DTEND": "20260817",
+        "SUMMARY": TEST_FEED_SUMMARY,
+        "DESCRIPTION": "固定URL購読の自動更新確認用テストです。",
+        "SEQUENCE": "0",
+    }
+    for key, value in expected.items():
+        if event.get(key) != [value]:
+            raise ValidationError(f"Test feed {key} mismatch")
+
+    text = data.decode("utf-8", errors="strict")
+    lines = set(text.split("\r\n"))
+    required_lines = {
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Blue-jp//Subscription Refresh Test//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        "END:VEVENT",
+        "END:VCALENDAR",
+    }
+    if not required_lines.issubset(lines):
+        raise ValidationError("Test feed calendar envelope mismatch")
+    if "DTSTART;VALUE=DATE:20260816\r\n" not in text:
+        raise ValidationError("Test feed DTSTART is not an all-day date")
+    if "DTEND;VALUE=DATE:20260817\r\n" not in text:
+        raise ValidationError("Test feed DTEND is not an all-day date")
 
 
 def validate(
@@ -248,7 +290,15 @@ def validate(
         raise ValidationError("Calendar page is missing its testing status")
     if "Generally available" in root_html or "正式公開" in root_html:
         raise ValidationError("Site incorrectly claims general availability")
+    if (
+        "subscription-test.ics" in root_html
+        or "subscription-test.ics" in calendar_html
+    ):
+        raise ValidationError(
+            "Public navigation links to the private test feed"
+        )
 
+    validate_test_feed(site)
     validate_text_files(site)
     return {
         "status": "passed",
@@ -257,6 +307,7 @@ def validate(
         "files": len(actual),
         "integrated_events": INTEGRATED_EVENT_COUNT,
         "year_files": len(YEARS) * 2,
+        "test_feed_events": 1,
         "privacy_findings": 0,
     }
 
