@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calendar subscription testing – 1962 Roman Calendar</title>
+  <style>
+    :root { color-scheme: light; --ink: #202124; --muted: #5f6368; --line: #dadce0; --test: #7a4f00; --test-bg: #fff4d6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: #fff; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.65; }
+    header, main, footer { width: min(980px, calc(100% - 32px)); margin-inline: auto; }
+    header { padding: 40px 0 22px; border-bottom: 1px solid var(--line); }
+    main { padding: 24px 0 48px; }
+    footer { padding: 20px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+    h1 { margin: 0 0 12px; font-size: clamp(1.7rem, 5vw, 2.35rem); line-height: 1.2; letter-spacing: 0; }
+    h2 { margin: 30px 0 10px; font-size: 1.2rem; letter-spacing: 0; }
+    a { color: #0757a6; }
+    code { overflow-wrap: anywhere; }
+    .status { display: inline-block; padding: 5px 9px; border: 1px solid #e5c56d; border-radius: 4px; color: var(--test); background: var(--test-bg); font-weight: 700; }
+    .endpoint { padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .endpoint strong { display: block; }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { padding: 8px; border-bottom: 1px solid var(--line); text-align: left; }
+    th { background: #f8f9fa; }
+    @media (max-width: 640px) { table, tbody, tr, td { display: block; } thead { display: none; } tr { padding: 8px 0; border-bottom: 1px solid var(--line); } td { border: 0; padding: 4px 0; } }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="status">Testing / テスト中</span>
+    <h1>Calendar subscription endpoints</h1>
+    <p>These fixed URLs are under subscription testing and are not yet announced for general use.</p>
+    <p>以下の固定URLは購読試験中です。一般利用向けの登録案内はまだ開始していません。</p>
+  </header>
+  <main>
+    <h2>Integrated feeds / 統合版</h2>
+    <div class="endpoint"><strong>Google Calendar test feed / Google Calendarテスト用</strong><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics</code></div>
+    <div class="endpoint"><strong>Plain iCalendar test feed / plain iCalendarテスト用</strong><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</code></div>
+    <p>Google Calendar controls its own refresh schedule, so updates may take time to appear. / Google Calendar側の再取得には時間差が生じる場合があります。</p>
+
+    <h2>Year-separated files / 年別ファイル</h2>
+    <table>
+      <thead><tr><th>Year</th><th>HTML description</th><th>Plain description</th></tr></thead>
+      <tbody>
+        <tr><td>2024</td><td><a href="by-year/2024-html.ics">2024 HTML</a></td><td><a href="by-year/2024-plain.ics">2024 plain</a></td></tr>
+        <tr><td>2025</td><td><a href="by-year/2025-html.ics">2025 HTML</a></td><td><a href="by-year/2025-plain.ics">2025 plain</a></td></tr>
+        <tr><td>2026</td><td><a href="by-year/2026-html.ics">2026 HTML</a></td><td><a href="by-year/2026-plain.ics">2026 plain</a></td></tr>
+        <tr><td>2027</td><td><a href="by-year/2027-html.ics">2027 HTML</a></td><td><a href="by-year/2027-plain.ics">2027 plain</a></td></tr>
+        <tr><td>2028</td><td><a href="by-year/2028-html.ics">2028 HTML</a></td><td><a href="by-year/2028-plain.ics">2028 plain</a></td></tr>
+        <tr><td>2029</td><td><a href="by-year/2029-html.ics">2029 HTML</a></td><td><a href="by-year/2029-plain.ics">2029 plain</a></td></tr>
+        <tr><td>2030</td><td><a href="by-year/2030-html.ics">2030 HTML</a></td><td><a href="by-year/2030-plain.ics">2030 plain</a></td></tr>
+        <tr><td>2031</td><td><a href="by-year/2031-html.ics">2031 HTML</a></td><td><a href="by-year/2031-plain.ics">2031 plain</a></td></tr>
+        <tr><td>2032</td><td><a href="by-year/2032-html.ics">2032 HTML</a></td><td><a href="by-year/2032-plain.ics">2032 plain</a></td></tr>
+        <tr><td>2033</td><td><a href="by-year/2033-html.ics">2033 HTML</a></td><td><a href="by-year/2033-plain.ics">2033 plain</a></td></tr>
+        <tr><td>2034</td><td><a href="by-year/2034-html.ics">2034 HTML</a></td><td><a href="by-year/2034-plain.ics">2034 plain</a></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Current source / 現在のsource</h2>
+    <p>Accepted tag <code>ja-localization-accepted-20260814</code>, covering 2024–2034. <a href="../">Site details / 詳細</a></p>
+  </main>
+  <footer>Subscription testing · 購読テスト中</footer>
+</body>
+</html>
