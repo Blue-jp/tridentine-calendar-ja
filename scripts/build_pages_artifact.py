@@ -21,9 +21,9 @@ from validate_release_assets import (
 
 
 TEST_FEED_UID = "subscription-refresh-test-1@blue-jp.github.io"
-TEST_FEED_DTSTAMP = "20260814T114306Z"
-TEST_FEED_SUMMARY = "購読更新テスト v1"
-TEST_FEED_DESCRIPTION = "固定URL購読の自動更新確認用テストです。"
+TEST_FEED_DTSTAMP = "20260814T124108Z"
+TEST_FEED_SUMMARY = "購読更新テスト v2"
+TEST_FEED_DESCRIPTION = "固定URL購読の自動更新確認用テストです。v2へ更新されました。"
 TEST_FEED_REQUIRED_LINES = {
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -73,7 +73,7 @@ def canonicalize_test_feed(data: bytes) -> bytes:
         "DTEND": "20260817",
         "SUMMARY": TEST_FEED_SUMMARY,
         "DESCRIPTION": TEST_FEED_DESCRIPTION,
-        "SEQUENCE": "0",
+        "SEQUENCE": "1",
     }
     for key, value in expected.items():
         if event.get(key) != [value]:

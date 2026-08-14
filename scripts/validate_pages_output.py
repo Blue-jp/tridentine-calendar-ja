@@ -150,7 +150,7 @@ def validate_test_feed(site: Path) -> None:
         "DTEND": "20260817",
         "SUMMARY": TEST_FEED_SUMMARY,
         "DESCRIPTION": TEST_FEED_DESCRIPTION,
-        "SEQUENCE": "0",
+        "SEQUENCE": "1",
     }
     for key, value in expected.items():
         if event.get(key) != [value]:
