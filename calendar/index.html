@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Calendar subscription testing – 1962 Roman Calendar</title>
+  <title>カレンダーを追加・ダウンロード | 1960年ローマ典礼暦・日本語版</title>
   <style>
-    :root { color-scheme: light; --ink: #202124; --muted: #5f6368; --line: #dadce0; --test: #7a4f00; --test-bg: #fff4d6; }
+    :root { color-scheme: light; --ink: #202124; --muted: #5f6368; --line: #dadce0; --accent: #8f1d2c; --link: #0757a6; --soft: #f7f8f9; }
     * { box-sizing: border-box; }
     body { margin: 0; color: var(--ink); background: #fff; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.65; }
     header, main, footer { width: min(980px, calc(100% - 32px)); margin-inline: auto; }
@@ -14,31 +14,45 @@
     footer { padding: 20px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
     h1 { margin: 0 0 12px; font-size: clamp(1.7rem, 5vw, 2.35rem); line-height: 1.2; letter-spacing: 0; }
     h2 { margin: 30px 0 10px; font-size: 1.2rem; letter-spacing: 0; }
-    a { color: #0757a6; }
+    a { color: var(--link); }
     code { overflow-wrap: anywhere; }
-    .status { display: inline-block; padding: 5px 9px; border: 1px solid #e5c56d; border-radius: 4px; color: var(--test); background: var(--test-bg); font-weight: 700; }
+    .english-title { margin: 0; color: var(--muted); }
+    .choice { padding: 20px 0; border-bottom: 1px solid var(--line); }
+    .choice-number { color: var(--accent); font-weight: 800; }
+    .button { display: inline-block; margin: 8px 8px 4px 0; padding: 10px 15px; border: 1px solid var(--link); border-radius: 4px; color: var(--link); background: #fff; font-weight: 700; text-decoration: none; }
+    .button.primary { border-color: var(--accent); color: #fff; background: var(--accent); }
+    .note { padding: 12px 14px; border-left: 4px solid var(--accent); background: var(--soft); }
     .endpoint { padding: 12px 0; border-bottom: 1px solid var(--line); }
     .endpoint strong { display: block; }
     table { width: 100%; border-collapse: collapse; font-size: .95rem; }
     th, td { padding: 8px; border-bottom: 1px solid var(--line); text-align: left; }
-    th { background: #f8f9fa; }
+    th { background: var(--soft); }
     @media (max-width: 640px) { table, tbody, tr, td { display: block; } thead { display: none; } tr { padding: 8px 0; border-bottom: 1px solid var(--line); } td { border: 0; padding: 4px 0; } }
   </style>
 </head>
 <body>
   <header>
-    <span class="status">Testing / テスト中</span>
-    <h1>Calendar subscription endpoints</h1>
-    <p>These fixed URLs are under subscription testing and are not yet announced for general use.</p>
-    <p>以下の固定URLは購読試験中です。一般利用向けの登録案内はまだ開始していません。</p>
+    <h1>1960年ローマ典礼暦・日本語版</h1>
+    <p class="english-title" lang="en">1960 Roman Liturgical Calendar – Japanese Edition</p>
+    <p>Google Calendarへの追加、固定URL購読、年別ファイルのダウンロードを選べます。</p>
   </header>
   <main>
-    <h2>Integrated feeds / 統合版</h2>
-    <div class="endpoint"><strong>Google Calendar test feed / Google Calendarテスト用</strong><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics</code></div>
-    <div class="endpoint"><strong>Plain iCalendar test feed / plain iCalendarテスト用</strong><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</code></div>
-    <p>Google Calendar controls its own refresh schedule, so updates may take time to appear. / Google Calendar側の再取得には時間差が生じる場合があります。</p>
+    <section class="choice">
+      <h2><span class="choice-number">1.</span> Google Calendarに追加（推奨）</h2>
+      <p>公開Google Calendarを直接追加します。配布側で更新された内容は購読カレンダーにも反映され、通常はICSの再インポートは不要です。</p>
+      <a class="button primary" href="https://calendar.google.com/calendar/u/2?cid=ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMyYmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank" rel="noreferrer">Google Calendarに追加</a>
+      <p><small>実地試験では即時反映を確認しましたが、反映時期はGoogle Calendarの処理により異なります。</small></p>
+    </section>
 
-    <h2>Year-separated files / 年別ファイル</h2>
+    <section class="choice">
+      <h2><span class="choice-number">2.</span> Apple Calendar・その他のアプリで購読</h2>
+      <p>次の固定URLをカレンダーアプリへ登録してください。更新にはアプリ側の再取得タイミングによる時間差が生じる場合があります。</p>
+      <div class="endpoint"><a class="button" href="google.ics">説明リンク付きICS</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics</code></div>
+      <div class="endpoint"><a class="button" href="plain.ics">Plain ICS</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</code></div>
+    </section>
+
+    <h2><span class="choice-number">3.</span> 年別ICSをダウンロード</h2>
+    <p>収録範囲は<strong>2024～2034</strong>です。</p>
     <table>
       <thead><tr><th>Year</th><th>HTML description</th><th>Plain description</th></tr></thead>
       <tbody>
@@ -56,9 +70,13 @@
       </tbody>
     </table>
 
-    <h2>Current source / 現在のsource</h2>
-    <p>Accepted tag <code>ja-localization-accepted-20260814</code>, covering 2024–2034. <a href="../">Site details / 詳細</a></p>
+    <p><a href="https://github.com/Blue-jp/tridentine_calendar/releases/tag/ja-localization-accepted-20260814">Accepted Releaseの配布ファイル</a></p>
+
+    <h2>利用上の注意</h2>
+    <p>典礼色は各予定の説明欄に記載されています。Google Calendarではカレンダー全体を一色で表示します。</p>
+    <p class="note">12月4日の「福者イエロニモ・デ・アンジェリス、福者シモン遠甫等殉教者」の1960年以後の正式等級は、典拠がないため確定していません。現在の内部rankはローダー既定値であり、典礼上の確定値ではありません。</p>
+    <p>Accepted tag <code>ja-localization-accepted-20260814</code>。<a href="../">トップページへ戻る</a></p>
   </main>
-  <footer>Subscription testing · 購読テスト中</footer>
+  <footer>MIT License · Based on <a href="https://github.com/joe-antognini/tridentine_calendar">joe-antognini/tridentine_calendar</a></footer>
 </body>
 </html>

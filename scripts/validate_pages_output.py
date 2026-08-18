@@ -288,20 +288,51 @@ def validate(
     calendar_html = (site / "calendar" / "index.html").read_text(
         encoding="utf-8", errors="strict"
     )
+    google_calendar_link = (
+        "https://calendar.google.com/calendar/u/2?cid="
+        "ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMy"
+        "YmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
+    )
     required_root = (
-        "Subscription testing",
-        "購読テスト中",
-        "2026-08-14",
-        "2024",
-        "2034",
+        "1960年ローマ典礼暦・日本語版",
+        "1960 Roman Liturgical Calendar – Japanese Edition",
+        "正式公開 / Published",
+        "Google Calendarに追加（推奨）",
+        google_calendar_link,
+        "calendar/google.ics",
+        "calendar/plain.ics",
+        "2024～2034",
+        "福者シモン遠甫等殉教者",
+        "典礼上の確定値ではありません",
+        "joe-antognini/tridentine_calendar",
+        "MIT License",
+    )
+    required_calendar = (
+        "1960年ローマ典礼暦・日本語版",
+        "1960 Roman Liturgical Calendar – Japanese Edition",
+        "Google Calendarに追加（推奨）",
+        google_calendar_link,
+        "google.ics",
+        "plain.ics",
+        "2024～2034",
+        "福者シモン遠甫等殉教者",
         "joe-antognini/tridentine_calendar",
     )
     if any(value not in root_html for value in required_root):
-        raise ValidationError("Root page is missing required testing text")
-    if "Testing / テスト中" not in calendar_html:
-        raise ValidationError("Calendar page is missing its testing status")
-    if "Generally available" in root_html or "正式公開" in root_html:
-        raise ValidationError("Site incorrectly claims general availability")
+        raise ValidationError("Root page is missing required publication text")
+    if any(value not in calendar_html for value in required_calendar):
+        raise ValidationError("Calendar page is missing required publication text")
+    forbidden_public_text = (
+        "Subscription testing",
+        "購読テスト中",
+        "Testing / テスト中",
+        "一般利用向けの登録案内はまだ開始していません",
+    )
+    if any(
+        value in root_html or value in calendar_html
+        for value in forbidden_public_text
+    ):
+        raise ValidationError("Public page still contains testing text")
     if (
         "subscription-test.ics" in root_html
         or "subscription-test.ics" in calendar_html
