@@ -293,12 +293,25 @@ def validate(
         "ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMy"
         "YmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
     )
+    apple_calendar_link = (
+        "webcal://blue-jp.github.io/tridentine-calendar-ja/"
+        "calendar/plain.ics"
+    )
+    apple_fallback_link = (
+        "https://blue-jp.github.io/tridentine-calendar-ja/"
+        "calendar/plain.ics"
+    )
     required_root = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
         "正式公開 / Published",
         "Google Calendarに追加（推奨）",
         google_calendar_link,
+        "Apple Calendarで使う",
+        "Apple Calendarに追加",
+        f'href="{apple_calendar_link}"',
+        apple_fallback_link,
+        "その他のカレンダーアプリで使う",
         "calendar/google.ics",
         "calendar/plain.ics",
         "2024～2034",
@@ -312,6 +325,11 @@ def validate(
         "1960 Roman Liturgical Calendar – Japanese Edition",
         "Google Calendarに追加（推奨）",
         google_calendar_link,
+        "Apple Calendarで使う",
+        "Apple Calendarに追加",
+        f'href="{apple_calendar_link}"',
+        apple_fallback_link,
+        "その他のカレンダーアプリで使う",
         "google.ics",
         "plain.ics",
         "2024～2034",
@@ -322,6 +340,11 @@ def validate(
         raise ValidationError("Root page is missing required publication text")
     if any(value not in calendar_html for value in required_calendar):
         raise ValidationError("Calendar page is missing required publication text")
+    for label, text in (("root", root_html), ("calendar", calendar_html)):
+        if "min-height: 44px" not in text or "@media (max-width:" not in text:
+            raise ValidationError(
+                f"{label} page is missing mobile button safeguards"
+            )
     forbidden_public_text = (
         "Subscription testing",
         "購読テスト中",

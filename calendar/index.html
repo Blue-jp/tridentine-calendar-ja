@@ -21,13 +21,14 @@
     .choice-number { color: var(--accent); font-weight: 800; }
     .button { display: inline-block; margin: 8px 8px 4px 0; padding: 10px 15px; border: 1px solid var(--link); border-radius: 4px; color: var(--link); background: #fff; font-weight: 700; text-decoration: none; }
     .button.primary { border-color: var(--accent); color: #fff; background: var(--accent); }
+    .button.apple { border-color: #3c4043; color: #fff; background: #3c4043; }
     .note { padding: 12px 14px; border-left: 4px solid var(--accent); background: var(--soft); }
     .endpoint { padding: 12px 0; border-bottom: 1px solid var(--line); }
     .endpoint strong { display: block; }
     table { width: 100%; border-collapse: collapse; font-size: .95rem; }
     th, td { padding: 8px; border-bottom: 1px solid var(--line); text-align: left; }
     th { background: var(--soft); }
-    @media (max-width: 640px) { table, tbody, tr, td { display: block; } thead { display: none; } tr { padding: 8px 0; border-bottom: 1px solid var(--line); } td { border: 0; padding: 4px 0; } }
+    @media (max-width: 640px) { table, tbody, tr, td { display: block; } thead { display: none; } tr { padding: 8px 0; border-bottom: 1px solid var(--line); } td { border: 0; padding: 4px 0; } .button { width: 100%; min-height: 44px; margin-right: 0; text-align: center; } }
   </style>
 </head>
 <body>
@@ -45,13 +46,20 @@
     </section>
 
     <section class="choice">
-      <h2><span class="choice-number">2.</span> Apple Calendar・その他のアプリで購読</h2>
-      <p>次の固定URLをカレンダーアプリへ登録してください。更新にはアプリ側の再取得タイミングによる時間差が生じる場合があります。</p>
+      <h2><span class="choice-number">2.</span> Apple Calendarで使う</h2>
+      <p>iPhone・iPad・Macでは、下のボタンからApple標準のカレンダーに追加できます。一度追加すれば、今後の更新も照会カレンダーとして反映されます。更新の反映時期はApple Calendarの再取得タイミングによって異なります。</p>
+      <a class="button apple" href="webcal://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-label="Apple Calendarに照会カレンダーを追加">Apple Calendarに追加</a>
+      <p><small>ボタンから追加できない場合は、<a href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">Plain ICS URL</a>をApple Calendarの「照会カレンダー」として登録してください。</small></p>
+    </section>
+
+    <section class="choice">
+      <h2><span class="choice-number">3.</span> その他のカレンダーアプリで使う</h2>
+      <p>次の固定URLをカレンダーアプリへ登録してください。更新にはアプリ側の再取得タイミングによる時間差が生じる場合があります。Apple製品では上の専用ボタンをおすすめします。</p>
       <div class="endpoint"><a class="button" href="google.ics">説明リンク付きICS</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics</code></div>
       <div class="endpoint"><a class="button" href="plain.ics">Plain ICS</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</code></div>
     </section>
 
-    <h2><span class="choice-number">3.</span> 年別ICSをダウンロード</h2>
+    <h2><span class="choice-number">4.</span> 年別ICSをダウンロード</h2>
     <p>収録範囲は<strong>2024～2034</strong>です。</p>
     <table>
       <thead><tr><th>Year</th><th>HTML description</th><th>Plain description</th></tr></thead>
