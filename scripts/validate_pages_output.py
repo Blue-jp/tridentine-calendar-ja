@@ -304,17 +304,21 @@ def validate(
     required_root = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
-        "正式公開 / Published",
-        "Google Calendarに追加（推奨）",
+        "Google Calendarをお使いの方",
+        "Google Calendarに追加",
         google_calendar_link,
-        "Apple Calendarで使う",
+        "iPhone・iPad・Macをお使いの方",
         "Apple Calendarに追加",
         f'href="{apple_calendar_link}"',
         apple_fallback_link,
-        "その他のカレンダーアプリで使う",
+        "その他のカレンダーアプリ",
         "calendar/google.ics",
         "calendar/plain.ics",
         "2024～2034",
+        "典礼情報について",
+        "先頭に「›」",
+        "詳細・ダウンロード",
+        "Accepted Release",
         "福者シモン遠甫等殉教者",
         "典礼上の確定値ではありません",
         "joe-antognini/tridentine_calendar",
@@ -341,7 +345,11 @@ def validate(
     if any(value not in calendar_html for value in required_calendar):
         raise ValidationError("Calendar page is missing required publication text")
     for label, text in (("root", root_html), ("calendar", calendar_html)):
-        if "min-height: 44px" not in text or "@media (max-width:" not in text:
+        if (
+            re.search(r"min-height:\s*(?:4[4-9]|[5-9][0-9])px", text)
+            is None
+            or "@media (max-width:" not in text
+        ):
             raise ValidationError(
                 f"{label} page is missing mobile button safeguards"
             )
