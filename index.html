@@ -47,6 +47,10 @@
     .copy-button:hover { background: #f3f7fc; }
     .copy-button:focus-visible { outline: 3px solid #f2c94c; outline-offset: 3px; }
     .copy-status { min-height: 1.5em; margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
+    .use-section .apple-fallback { margin-top: 12px; }
+    .subscription-option { margin-top: 16px; }
+    .subscription-option + .subscription-option { margin-top: 20px; }
+    .url-label { margin: 0 0 4px; }
     .note { padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--soft); }
     .detail-list { padding-left: 1.25rem; }
     @media (max-width: 520px) {
@@ -75,7 +79,7 @@
       <h2 id="apple-calendar">Apple標準のカレンダーをお使いの方</h2>
       <p>以下のボタンを押すと、カレンダーを追加できます。今後のカレンダーの更新は、追加後に自動的に反映されます。</p>
       <a class="button apple" href="webcal://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-label="Apple標準のカレンダーに照会カレンダーを追加">Apple標準のカレンダーに追加</a>
-      <p><small>ボタンから追加できない場合は、以下のURLをAppleカレンダーの「カレンダーを追加」→「照会カレンダーを追加」のURL欄に入力してください。更新の反映時期は、Appleカレンダーの再取得タイミングにより異なります。</small></p>
+      <p class="apple-fallback"><small>ボタンから追加できない場合は、以下のURLをAppleカレンダーの「カレンダーを追加」→「照会カレンダーを追加」のURL欄に入力してください。更新の反映時期は、Appleカレンダーの再取得タイミングにより異なります。</small></p>
       <div class="copy-row">
         <a class="url-display" href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</a>
         <button class="copy-button" type="button" data-copy-url="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-describedby="apple-copy-status">URLをコピー</button>
@@ -86,8 +90,22 @@
     <section class="use-section" aria-labelledby="other-apps">
       <h2 id="other-apps">その他のカレンダーアプリ</h2>
       <p>お使いのアプリで、次の固定URLを購読してください。</p>
-      <a class="button" href="calendar/google.ics">祝日・記念の解説リンクつきカレンダー</a>
-      <a class="button" href="calendar/plain.ics">解説リンクなしカレンダー</a>
+      <div class="subscription-option">
+        <p class="url-label"><strong>祝日・記念の解説リンクつきカレンダー</strong></p>
+        <div class="copy-row">
+          <a class="url-display" href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics">https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics</a>
+          <button class="copy-button" type="button" data-copy-url="https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics" aria-describedby="other-html-copy-status">URLをコピー</button>
+        </div>
+        <p class="copy-status" id="other-html-copy-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="subscription-option">
+        <p class="url-label"><strong>解説リンクなしカレンダー</strong></p>
+        <div class="copy-row">
+          <a class="url-display" href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</a>
+          <button class="copy-button" type="button" data-copy-url="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-describedby="other-plain-copy-status">URLをコピー</button>
+        </div>
+        <p class="copy-status" id="other-plain-copy-status" role="status" aria-live="polite"></p>
+      </div>
       <p><small>更新の反映時期は、各アプリの再取得タイミングによって異なります。</small></p>
     </section>
 

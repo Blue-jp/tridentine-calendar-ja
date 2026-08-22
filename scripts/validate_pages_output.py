@@ -327,6 +327,10 @@ def validate(
         "https://blue-jp.github.io/tridentine-calendar-ja/"
         "calendar/plain.ics"
     )
+    html_subscription_link = (
+        "https://blue-jp.github.io/tridentine-calendar-ja/"
+        "calendar/google.ics"
+    )
     accepted_release_link = (
         "https://github.com/Blue-jp/tridentine_calendar/releases/tag/"
         "ja-localization-accepted-20260814"
@@ -354,6 +358,9 @@ def validate(
         "その他のカレンダーアプリ",
         "祝日・記念の解説リンクつきカレンダー",
         "解説リンクなしカレンダー",
+        html_subscription_link,
+        'id="other-html-copy-status"',
+        'id="other-plain-copy-status"',
         "calendar/google.ics",
         "calendar/plain.ics",
         "2024～2034",
@@ -390,6 +397,9 @@ def validate(
         "その他のカレンダーアプリで使う",
         "祝日・記念の解説リンクつきカレンダー",
         "解説リンクなしカレンダー",
+        html_subscription_link,
+        'id="other-html-copy-status"',
+        'id="other-plain-copy-status"',
         "google.ics",
         "plain.ics",
         "年別カレンダー（ICS）をダウンロード",
@@ -421,6 +431,31 @@ def validate(
             raise ValidationError(
                 f"{label} page is missing accessible primary-button styling"
             )
+        if "apple-fallback { margin-top: 12px; }" not in text:
+            raise ValidationError(f"{label} page is missing Apple fallback spacing")
+        expected_copy_targets = {
+            apple_fallback_link: 2,
+            html_subscription_link: 1,
+        }
+        for copy_url, expected_count in expected_copy_targets.items():
+            if text.count(f'data-copy-url="{copy_url}"') != expected_count:
+                raise ValidationError(
+                    f"{label} page copy target count mismatch"
+                )
+        if text.count('class="copy-button"') != 3:
+            raise ValidationError(f"{label} page copy button count mismatch")
+        for status_id in (
+            "apple-copy-status",
+            "other-html-copy-status",
+            "other-plain-copy-status",
+        ):
+            if (
+                text.count(f'id="{status_id}"') != 1
+                or text.count(f'aria-describedby="{status_id}"') != 1
+            ):
+                raise ValidationError(
+                    f"{label} page copy status wiring mismatch"
+                )
         lowered = text.lstrip().lower()
         if (
             not lowered.startswith("<!doctype html>")
@@ -456,6 +491,10 @@ def validate(
         ">Apple Calendarに追加</a>",
         ">説明リンク付きICS</a>",
         ">Plain ICS</a>",
+        'class="button" href="calendar/google.ics"',
+        'class="button" href="calendar/plain.ics"',
+        'class="button" href="google.ics"',
+        'class="button" href="plain.ics"',
         "実地試験では即時反映を確認しました",
         "Google Calendarではカレンダー全体を一色で表示します",
         "各予定の説明欄には、典礼色と関連する解説リンクを掲載しています",
