@@ -372,6 +372,7 @@ def validate(
         accepted_release_link,
         "Joe Antognini氏による",
         "日本語ローカライズにおける変更",
+        'class="license-line"',
         'class="publication-note"',
         'datetime="2026-08-22"',
         "joe-antognini/tridentine_calendar",
@@ -486,15 +487,19 @@ def validate(
         raise ValidationError("Calendar page unexpectedly contains publication note")
     about_index = root_html.index("<h3>このカレンダーについて</h3>")
     attribution_index = root_html.index("Joe Antognini氏による")
-    publication_index = root_html.index('<p class="publication-note">')
     main_end_index = root_html.index("</main>")
     footer_index = root_html.index("<footer>")
+    license_index = root_html.index('<p class="license-line">')
+    publication_index = root_html.index('<p class="publication-note">')
+    footer_end_index = root_html.index("</footer>")
     if not (
         about_index
         < attribution_index
-        < publication_index
         < main_end_index
         < footer_index
+        < license_index
+        < publication_index
+        < footer_end_index
     ):
         raise ValidationError("Root page publication note position mismatch")
     accepted_tag = "ja-localization-accepted-20260814"

@@ -53,7 +53,8 @@
     .url-label { margin: 0 0 4px; }
     .note { padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--soft); }
     .detail-list { padding-left: 1.25rem; }
-    .publication-note { margin: 18px 0 0; color: var(--muted); font-size: .9rem; }
+    .license-line { margin: 0; }
+    .publication-note { margin: 8px 0 0; }
     .publication-note time, .publication-segment { white-space: nowrap; }
     @media (max-width: 520px) {
       header { padding-top: 28px; }
@@ -122,9 +123,11 @@
 
     <h3>このカレンダーについて</h3>
     <p>Joe Antognini氏による<a href="https://github.com/joe-antognini/tridentine_calendar">joe-antognini/tridentine_calendar</a>を基に作成しています。<a href="https://github.com/Blue-jp/tridentine_calendar">Blue-jp</a>による日本語ローカライズにおける変更のすべてが、本家プロジェクトに反映されているとは限りません。</p>
-    <p class="publication-note"><time datetime="2026-08-22">2026年8月22日</time>　<span class="publication-segment">童貞聖マリアの汚れなき御心</span>　<span class="publication-segment">ページ公開</span></p>
   </main>
-  <footer><a href="LICENSE.txt">MIT License</a> · Blue-jp</footer>
+  <footer>
+    <p class="license-line"><a href="LICENSE.txt">MIT License</a> · Blue-jp</p>
+    <p class="publication-note"><time datetime="2026-08-22">2026年8月22日</time>　<span class="publication-segment">童貞聖マリアの汚れなき御心</span>　<span class="publication-segment">ページ公開</span></p>
+  </footer>
   <script>
     (() => {
       document.querySelectorAll("[data-copy-url]").forEach((button) => {
