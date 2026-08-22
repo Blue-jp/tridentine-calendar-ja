@@ -372,6 +372,8 @@ def validate(
         accepted_release_link,
         "Joe Antognini氏による",
         "日本語ローカライズにおける変更",
+        'class="publication-note"',
+        'datetime="2026-08-22"',
         "joe-antognini/tridentine_calendar",
         "MIT License",
     )
@@ -477,6 +479,24 @@ def validate(
 
     root_visible = visible_text(root_html)
     calendar_visible = visible_text(calendar_html)
+    publication_text = "2026年8月22日　童貞聖マリアの汚れなき御心　ページ公開"
+    if root_visible.count(publication_text) != 1:
+        raise ValidationError("Root page publication note count mismatch")
+    if publication_text in calendar_visible:
+        raise ValidationError("Calendar page unexpectedly contains publication note")
+    about_index = root_html.index("<h3>このカレンダーについて</h3>")
+    attribution_index = root_html.index("Joe Antognini氏による")
+    publication_index = root_html.index('<p class="publication-note">')
+    main_end_index = root_html.index("</main>")
+    footer_index = root_html.index("<footer>")
+    if not (
+        about_index
+        < attribution_index
+        < publication_index
+        < main_end_index
+        < footer_index
+    ):
+        raise ValidationError("Root page publication note position mismatch")
     accepted_tag = "ja-localization-accepted-20260814"
     known_limitation = "福者シモン遠甫等殉教者"
     if accepted_tag in root_visible or accepted_tag in calendar_visible:
