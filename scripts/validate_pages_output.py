@@ -371,6 +371,8 @@ def validate(
     required_calendar = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
+        'src="../images/eucharistic-header.png"',
+        'alt="ご聖体と天使を描いた宗教画"',
         "Googleカレンダーへの追加、固定URL購読",
         "Googleカレンダーをお使いの方",
         "Googleカレンダーに追加",
@@ -402,6 +404,8 @@ def validate(
         raise ValidationError("Root page is missing required publication text")
     if root_html.index('src="images/eucharistic-header.png"') > root_html.index("<h1>"):
         raise ValidationError("Header image is not positioned before the H1")
+    if calendar_html.index('src="../images/eucharistic-header.png"') > calendar_html.index("<h1>"):
+        raise ValidationError("Calendar header image is not positioned before the H1")
     if any(value not in calendar_html for value in required_calendar):
         raise ValidationError("Calendar page is missing required publication text")
     for label, text in (("root", root_html), ("calendar", calendar_html)):
