@@ -39,11 +39,19 @@
     .button.primary, .button.apple { border-color: var(--button); color: #fff; background: var(--button); }
     .button.primary:hover, .button.apple:hover { background: var(--button-hover); }
     .button:focus-visible { outline: 3px solid #f2c94c; outline-offset: 3px; }
+    .copy-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; margin-top: 10px; }
+    .url-display { min-width: 0; padding: 9px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--soft); overflow-wrap: anywhere; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: .9rem; }
+    .copy-button { min-height: 44px; padding: 9px 14px; border: 1px solid var(--link); border-radius: 4px; color: var(--link); background: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    .copy-button:hover { background: #f3f7fc; }
+    .copy-button:focus-visible { outline: 3px solid #f2c94c; outline-offset: 3px; }
+    .copy-status { min-height: 1.5em; margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
     .note { padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--soft); }
     .detail-list { padding-left: 1.25rem; }
     @media (max-width: 520px) {
       header { padding-top: 28px; }
       .button { width: 100%; min-height: 48px; margin-right: 0; }
+      .copy-row { grid-template-columns: 1fr; }
+      .copy-button { width: 100%; }
     }
   </style>
 </head>
@@ -64,7 +72,12 @@
       <h2 id="apple-calendar">Apple標準のカレンダーをお使いの方</h2>
       <p>以下のボタンを押すと、カレンダーを追加できます。今後のカレンダーの更新は、追加後に自動的に反映されます。</p>
       <a class="button apple" href="webcal://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-label="Apple標準のカレンダーに照会カレンダーを追加">Apple標準のカレンダーに追加</a>
-      <p><small>ボタンから追加できない場合は、こちらの<a href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">Plain ICS URL</a>をAppleカレンダーの「カレンダーを追加」→「照会カレンダーを追加」のURL欄に入力してください。更新の反映時期は、Appleカレンダーの再取得タイミングにより異なります。</small></p>
+      <p><small>ボタンから追加できない場合は、下のURLをAppleカレンダーの「カレンダーを追加」→「照会カレンダーを追加」のURL欄に入力してください。更新の反映時期は、Appleカレンダーの再取得タイミングにより異なります。</small></p>
+      <div class="copy-row">
+        <a class="url-display" href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</a>
+        <button class="copy-button" type="button" data-copy-url="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-describedby="apple-copy-status">URLをコピー</button>
+      </div>
+      <p class="copy-status" id="apple-copy-status" role="status" aria-live="polite"></p>
     </section>
 
     <section class="use-section" aria-labelledby="other-apps">
@@ -88,5 +101,33 @@
     <p>Joe Antognini氏による<a href="https://github.com/joe-antognini/tridentine_calendar">joe-antognini/tridentine_calendar</a>を基に作成しています。<a href="https://github.com/Blue-jp/tridentine_calendar">Blue-jp</a>による日本語ローカライズにおける変更のすべてが、本家プロジェクトに反映されているとは限りません。</p>
   </main>
   <footer><a href="LICENSE.txt">MIT License</a> · Blue-jp</footer>
+  <script>
+    (() => {
+      document.querySelectorAll("[data-copy-url]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const status = document.getElementById(button.getAttribute("aria-describedby"));
+          try {
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(button.dataset.copyUrl);
+            } else {
+              const field = document.createElement("textarea");
+              field.value = button.dataset.copyUrl;
+              field.setAttribute("readonly", "");
+              field.style.position = "fixed";
+              field.style.opacity = "0";
+              document.body.appendChild(field);
+              field.select();
+              const copied = document.execCommand("copy");
+              field.remove();
+              if (!copied) throw new Error("copy failed");
+            }
+            status.textContent = "URLをコピーしました。";
+          } catch {
+            status.textContent = "コピーできませんでした。表示されたURLを選択してコピーしてください。";
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
