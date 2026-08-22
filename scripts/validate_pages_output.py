@@ -100,6 +100,7 @@ def expected_site_files() -> set[str]:
         "index.html",
         "404.html",
         "LICENSE.txt",
+        "images/eucharistic-header.png",
         "calendar/index.html",
         "calendar/google.ics",
         "calendar/plain.ics",
@@ -118,6 +119,8 @@ def validate_text_files(site: Path) -> None:
     for path in sorted(path for path in site.rglob("*") if path.is_file()):
         relative = path.relative_to(site).as_posix()
         data = path.read_bytes()
+        if path.suffix.lower() == ".png":
+            continue
         try:
             text = data.decode("utf-8", errors="strict")
         except UnicodeError as exc:
@@ -129,6 +132,29 @@ def validate_text_files(site: Path) -> None:
         findings.extend(privacy_findings(relative, text))
     if findings:
         raise ValidationError("Privacy scan failed: " + "; ".join(findings))
+
+
+def validate_header_image(site: Path) -> None:
+    path = site / "images" / "eucharistic-header.png"
+    data = path.read_bytes()
+    if sha256(data) != (
+        "05d8d68a55132fa393a9aa7522a7264078fa3df4505438a1fa4b4328bfd079d6"
+    ):
+        raise ValidationError("Header image SHA-256 mismatch")
+    if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValidationError("Header image is not a PNG")
+    width = int.from_bytes(data[16:20], "big")
+    height = int.from_bytes(data[20:24], "big")
+    if (width, height) != (1261, 563):
+        raise ValidationError("Header image dimensions mismatch")
+    offset = 8
+    metadata_chunks = {b"tEXt", b"zTXt", b"iTXt", b"eXIf"}
+    while offset < len(data):
+        length = int.from_bytes(data[offset : offset + 4], "big")
+        chunk_type = data[offset + 4 : offset + 8]
+        if chunk_type in metadata_chunks:
+            raise ValidationError("Header image contains metadata")
+        offset += length + 12
 
 
 def validate_test_feed(site: Path) -> None:
@@ -293,35 +319,152 @@ def validate(
         "ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMy"
         "YmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
     )
+    apple_calendar_link = (
+        "webcal://blue-jp.github.io/tridentine-calendar-ja/"
+        "calendar/plain.ics"
+    )
+    apple_fallback_link = (
+        "https://blue-jp.github.io/tridentine-calendar-ja/"
+        "calendar/plain.ics"
+    )
+    accepted_release_link = (
+        "https://github.com/Blue-jp/tridentine_calendar/releases/tag/"
+        "ja-localization-accepted-20260814"
+    )
     required_root = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
-        "正式公開 / Published",
-        "Google Calendarに追加（推奨）",
+        'src="images/eucharistic-header.png"',
+        'alt="ご聖体と天使を描いた宗教画"',
+        "日本固有の祝日",
+        "現時点では",
+        "Googleカレンダーをお使いの方",
+        "Googleカレンダーに追加",
         google_calendar_link,
+        "Apple標準のカレンダーをお使いの方",
+        "Apple標準のカレンダーに追加",
+        "「照会カレンダーを追加」のURL欄に入力してください",
+        "以下のURLをAppleカレンダー",
+        "URLをコピー",
+        f'data-copy-url="{apple_fallback_link}"',
+        "navigator.clipboard.writeText",
+        'aria-live="polite"',
+        f'href="{apple_calendar_link}"',
+        apple_fallback_link,
+        "その他のカレンダーアプリ",
+        "祝日・記念の解説リンクつきカレンダー",
+        "解説リンクなしカレンダー",
         "calendar/google.ics",
         "calendar/plain.ics",
         "2024～2034",
-        "福者シモン遠甫等殉教者",
-        "典礼上の確定値ではありません",
+        "典礼情報について",
+        "他の典礼日が優先される祝日・記念",
+        "詳細・ダウンロード",
+        "年別カレンダー（ICS）と詳しい利用方法",
+        "手動ダウンロードとリリース情報（GitHub）",
+        accepted_release_link,
+        "Joe Antognini氏による",
+        "日本語ローカライズにおける変更",
         "joe-antognini/tridentine_calendar",
         "MIT License",
     )
     required_calendar = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
-        "Google Calendarに追加（推奨）",
+        'src="../images/eucharistic-header.png"',
+        'alt="ご聖体と天使を描いた宗教画"',
+        "Googleカレンダーへの追加、固定URL購読",
+        "Googleカレンダーをお使いの方",
+        "Googleカレンダーに追加",
         google_calendar_link,
+        "Apple標準のカレンダーをお使いの方",
+        "Apple標準のカレンダーに追加",
+        "「照会カレンダーを追加」のURL欄に入力してください",
+        "以下のURLをAppleカレンダー",
+        "URLをコピー",
+        f'data-copy-url="{apple_fallback_link}"',
+        "navigator.clipboard.writeText",
+        'aria-live="polite"',
+        f'href="{apple_calendar_link}"',
+        apple_fallback_link,
+        "その他のカレンダーアプリで使う",
+        "祝日・記念の解説リンクつきカレンダー",
+        "解説リンクなしカレンダー",
         "google.ics",
         "plain.ics",
+        "年別カレンダー（ICS）をダウンロード",
         "2024～2034",
+        "解説リンク（HTML）あり",
         "福者シモン遠甫等殉教者",
+        "典礼上の確定値ではありません",
         "joe-antognini/tridentine_calendar",
+        "MIT License",
     )
     if any(value not in root_html for value in required_root):
         raise ValidationError("Root page is missing required publication text")
+    if root_html.index('src="images/eucharistic-header.png"') > root_html.index("<h1>"):
+        raise ValidationError("Header image is not positioned before the H1")
+    if calendar_html.index('src="../images/eucharistic-header.png"') > calendar_html.index("<h1>"):
+        raise ValidationError("Calendar header image is not positioned before the H1")
     if any(value not in calendar_html for value in required_calendar):
         raise ValidationError("Calendar page is missing required publication text")
+    for label, text in (("root", root_html), ("calendar", calendar_html)):
+        if (
+            re.search(r"min-height:\s*(?:4[4-9]|[5-9][0-9])px", text)
+            is None
+            or "@media (max-width:" not in text
+        ):
+            raise ValidationError(
+                f"{label} page is missing mobile button safeguards"
+            )
+        if "#3d62ad" not in text or ":focus-visible" not in text:
+            raise ValidationError(
+                f"{label} page is missing accessible primary-button styling"
+            )
+        lowered = text.lstrip().lower()
+        if (
+            not lowered.startswith("<!doctype html>")
+            or text.count("<html") != 1
+            or text.count("</html>") != 1
+            or text.count("<body>") != 1
+            or text.count("</body>") != 1
+        ):
+            raise ValidationError(f"{label} page structure is invalid")
+    for year in YEARS:
+        for form in ("html", "plain"):
+            if f'href="by-year/{year}-{form}.ics"' not in calendar_html:
+                raise ValidationError(
+                    f"Calendar page is missing year link: {year} {form}"
+                )
+
+    def visible_text(text: str) -> str:
+        return re.sub(r"<[^>]+>", "", text)
+
+    root_visible = visible_text(root_html)
+    calendar_visible = visible_text(calendar_html)
+    accepted_tag = "ja-localization-accepted-20260814"
+    known_limitation = "福者シモン遠甫等殉教者"
+    if accepted_tag in root_visible or accepted_tag in calendar_visible:
+        raise ValidationError("Accepted tag is still displayed on a public page")
+    if known_limitation in root_visible:
+        raise ValidationError("Root page still displays the known limitation")
+    if known_limitation not in calendar_visible:
+        raise ValidationError("Calendar page lost the known limitation")
+    forbidden_visible_text = (
+        "Google Calendarをお使いの方",
+        ">Google Calendarに追加</a>",
+        ">Apple Calendarに追加</a>",
+        ">説明リンク付きICS</a>",
+        ">Plain ICS</a>",
+        "実地試験では即時反映を確認しました",
+        "Google Calendarではカレンダー全体を一色で表示します",
+        "各予定の説明欄には、典礼色と関連する解説リンクを掲載しています",
+        "<th>Year</th>",
+        "<th>HTML description</th>",
+        "<th>Plain description</th>",
+    )
+    if any(value in root_html or value in calendar_html for value in forbidden_visible_text):
+        raise ValidationError("Public page still contains replaced wording")
     forbidden_public_text = (
         "Subscription testing",
         "購読テスト中",
@@ -342,6 +485,7 @@ def validate(
         )
 
     validate_test_feed(site)
+    validate_header_image(site)
     validate_text_files(site)
     return {
         "status": "passed",

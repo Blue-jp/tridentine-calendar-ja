@@ -97,7 +97,12 @@ def build(repository: Path, assets: Path, output: Path, accepted_tag: str) -> di
         raise ValidationError("Build tag does not match release metadata")
 
     prepare_output(output)
-    for relative in ("index.html", "404.html", "LICENSE.txt"):
+    for relative in (
+        "index.html",
+        "404.html",
+        "LICENSE.txt",
+        "images/eucharistic-header.png",
+    ):
         copy_bytes(repository / relative, output / relative)
     copy_bytes(
         repository / "calendar" / "index.html",

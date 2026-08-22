@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>カレンダーを追加・ダウンロード | 1960年ローマ典礼暦・日本語版</title>
   <style>
-    :root { color-scheme: light; --ink: #202124; --muted: #5f6368; --line: #dadce0; --accent: #8f1d2c; --link: #0757a6; --soft: #f7f8f9; }
+    :root { color-scheme: light; --ink: #202124; --muted: #5f6368; --line: #dadce0; --accent: #8f1d2c; --button: #3d62ad; --button-hover: #2f4f8f; --link: #0757a6; --soft: #f7f8f9; }
     * { box-sizing: border-box; }
     body { margin: 0; color: var(--ink); background: #fff; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.65; }
     header, main, footer { width: min(980px, calc(100% - 32px)); margin-inline: auto; }
@@ -13,48 +13,70 @@
     main { padding: 24px 0 48px; }
     footer { padding: 20px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
     h1 { margin: 0 0 12px; font-size: clamp(1.7rem, 5vw, 2.35rem); line-height: 1.2; letter-spacing: 0; }
+    header > h1 { text-align: center; }
     h2 { margin: 30px 0 10px; font-size: 1.2rem; letter-spacing: 0; }
     a { color: var(--link); }
     code { overflow-wrap: anywhere; }
     .english-title { margin: 0; color: var(--muted); }
+    .header-image { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 24px; }
     .choice { padding: 20px 0; border-bottom: 1px solid var(--line); }
     .choice-number { color: var(--accent); font-weight: 800; }
     .button { display: inline-block; margin: 8px 8px 4px 0; padding: 10px 15px; border: 1px solid var(--link); border-radius: 4px; color: var(--link); background: #fff; font-weight: 700; text-decoration: none; }
-    .button.primary { border-color: var(--accent); color: #fff; background: var(--accent); }
+    .button.primary, .button.apple { border-color: var(--button); color: #fff; background: var(--button); }
+    .button.primary:hover, .button.apple:hover { background: var(--button-hover); }
+    .button:focus-visible { outline: 3px solid #f2c94c; outline-offset: 3px; }
+    .copy-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; margin-top: 10px; }
+    .url-display { min-width: 0; padding: 9px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--soft); overflow-wrap: anywhere; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: .9rem; }
+    .copy-button { min-height: 44px; padding: 9px 14px; border: 1px solid var(--link); border-radius: 4px; color: var(--link); background: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    .copy-button:hover { background: #f3f7fc; }
+    .copy-button:focus-visible { outline: 3px solid #f2c94c; outline-offset: 3px; }
+    .copy-status { min-height: 1.5em; margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
     .note { padding: 12px 14px; border-left: 4px solid var(--accent); background: var(--soft); }
     .endpoint { padding: 12px 0; border-bottom: 1px solid var(--line); }
     .endpoint strong { display: block; }
     table { width: 100%; border-collapse: collapse; font-size: .95rem; }
     th, td { padding: 8px; border-bottom: 1px solid var(--line); text-align: left; }
     th { background: var(--soft); }
-    @media (max-width: 640px) { table, tbody, tr, td { display: block; } thead { display: none; } tr { padding: 8px 0; border-bottom: 1px solid var(--line); } td { border: 0; padding: 4px 0; } }
+    @media (max-width: 640px) { table, tbody, tr, td { display: block; } thead { display: none; } tr { padding: 8px 0; border-bottom: 1px solid var(--line); } td { border: 0; padding: 4px 0; } .button { width: 100%; min-height: 44px; margin-right: 0; text-align: center; } .copy-row { grid-template-columns: 1fr; } .copy-button { width: 100%; } }
   </style>
 </head>
 <body>
   <header>
+    <img class="header-image" src="../images/eucharistic-header.png" width="1261" height="563" alt="ご聖体と天使を描いた宗教画">
     <h1>1960年ローマ典礼暦・日本語版</h1>
     <p class="english-title" lang="en">1960 Roman Liturgical Calendar – Japanese Edition</p>
-    <p>Google Calendarへの追加、固定URL購読、年別ファイルのダウンロードを選べます。</p>
+    <p>Googleカレンダーへの追加、固定URL購読、年別ファイルのダウンロードを選ぶことができます。</p>
   </header>
   <main>
     <section class="choice">
-      <h2><span class="choice-number">1.</span> Google Calendarに追加（推奨）</h2>
-      <p>公開Google Calendarを直接追加します。配布側で更新された内容は購読カレンダーにも反映され、通常はICSの再インポートは不要です。</p>
-      <a class="button primary" href="https://calendar.google.com/calendar/u/2?cid=ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMyYmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank" rel="noreferrer">Google Calendarに追加</a>
-      <p><small>実地試験では即時反映を確認しましたが、反映時期はGoogle Calendarの処理により異なります。</small></p>
+      <h2><span class="choice-number">1.</span> Googleカレンダーをお使いの方</h2>
+      <p>以下のボタンを押すと、カレンダーを追加できます。今後のカレンダーの更新は、追加後に自動的に反映されます。</p>
+      <a class="button primary" href="https://calendar.google.com/calendar/u/2?cid=ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMyYmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank" rel="noreferrer">Googleカレンダーに追加</a>
     </section>
 
     <section class="choice">
-      <h2><span class="choice-number">2.</span> Apple Calendar・その他のアプリで購読</h2>
-      <p>次の固定URLをカレンダーアプリへ登録してください。更新にはアプリ側の再取得タイミングによる時間差が生じる場合があります。</p>
-      <div class="endpoint"><a class="button" href="google.ics">説明リンク付きICS</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics</code></div>
-      <div class="endpoint"><a class="button" href="plain.ics">Plain ICS</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</code></div>
+      <h2><span class="choice-number">2.</span> Apple標準のカレンダーをお使いの方</h2>
+      <p>以下のボタンを押すと、カレンダーを追加できます。今後のカレンダーの更新は、追加後に自動的に反映されます。</p>
+      <a class="button apple" href="webcal://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-label="Apple標準のカレンダーに照会カレンダーを追加">Apple標準のカレンダーに追加</a>
+      <p><small>ボタンから追加できない場合は、以下のURLをAppleカレンダーの「カレンダーを追加」→「照会カレンダーを追加」のURL欄に入力してください。更新の反映時期は、Appleカレンダーの再取得タイミングにより異なります。</small></p>
+      <div class="copy-row">
+        <a class="url-display" href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</a>
+        <button class="copy-button" type="button" data-copy-url="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-describedby="apple-copy-status">URLをコピー</button>
+      </div>
+      <p class="copy-status" id="apple-copy-status" role="status" aria-live="polite"></p>
     </section>
 
-    <h2><span class="choice-number">3.</span> 年別ICSをダウンロード</h2>
-    <p>収録範囲は<strong>2024～2034</strong>です。</p>
+    <section class="choice">
+      <h2><span class="choice-number">3.</span> その他のカレンダーアプリで使う</h2>
+      <p>次の固定URLをカレンダーアプリへ登録してください。更新にはアプリ側の再取得タイミングによる時間差が生じる場合があります。Apple製品では上の専用ボタンをおすすめします。</p>
+      <div class="endpoint"><a class="button" href="google.ics">祝日・記念の解説リンクつきカレンダー</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/google.ics</code></div>
+      <div class="endpoint"><a class="button" href="plain.ics">解説リンクなしカレンダー</a><code>https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics</code></div>
+    </section>
+
+    <h2><span class="choice-number">4.</span> 年別カレンダー（ICS）をダウンロード</h2>
+    <p>収録範囲は<strong>2024～2034</strong>年です。</p>
     <table>
-      <thead><tr><th>Year</th><th>HTML description</th><th>Plain description</th></tr></thead>
+      <thead><tr><th>年</th><th>解説リンク（HTML）あり</th><th>解説リンクなし</th></tr></thead>
       <tbody>
         <tr><td>2024</td><td><a href="by-year/2024-html.ics">2024 HTML</a></td><td><a href="by-year/2024-plain.ics">2024 plain</a></td></tr>
         <tr><td>2025</td><td><a href="by-year/2025-html.ics">2025 HTML</a></td><td><a href="by-year/2025-plain.ics">2025 plain</a></td></tr>
@@ -73,10 +95,38 @@
     <p><a href="https://github.com/Blue-jp/tridentine_calendar/releases/tag/ja-localization-accepted-20260814">Accepted Releaseの配布ファイル</a></p>
 
     <h2>利用上の注意</h2>
-    <p>典礼色は各予定の説明欄に記載されています。Google Calendarではカレンダー全体を一色で表示します。</p>
+    <p>典礼色は各予定の説明欄に記載されています。</p>
     <p class="note">12月4日の「福者イエロニモ・デ・アンジェリス、福者シモン遠甫等殉教者」の1960年以後の正式等級は、典拠がないため確定していません。現在の内部rankはローダー既定値であり、典礼上の確定値ではありません。</p>
-    <p>Accepted tag <code>ja-localization-accepted-20260814</code>。<a href="../">トップページへ戻る</a></p>
+    <p><a href="../">トップページへ戻る</a></p>
   </main>
-  <footer>MIT License · Based on <a href="https://github.com/joe-antognini/tridentine_calendar">joe-antognini/tridentine_calendar</a></footer>
+  <footer><a href="../LICENSE.txt">MIT License</a> · Based on <a href="https://github.com/joe-antognini/tridentine_calendar">joe-antognini/tridentine_calendar</a></footer>
+  <script>
+    (() => {
+      document.querySelectorAll("[data-copy-url]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const status = document.getElementById(button.getAttribute("aria-describedby"));
+          try {
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(button.dataset.copyUrl);
+            } else {
+              const field = document.createElement("textarea");
+              field.value = button.dataset.copyUrl;
+              field.setAttribute("readonly", "");
+              field.style.position = "fixed";
+              field.style.opacity = "0";
+              document.body.appendChild(field);
+              field.select();
+              const copied = document.execCommand("copy");
+              field.remove();
+              if (!copied) throw new Error("copy failed");
+            }
+            status.textContent = "URLをコピーしました。";
+          } catch {
+            status.textContent = "コピーできませんでした。表示されたURLを選択してコピーしてください。";
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
