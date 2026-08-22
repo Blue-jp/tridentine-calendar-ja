@@ -100,6 +100,7 @@ def expected_site_files() -> set[str]:
         "index.html",
         "404.html",
         "LICENSE.txt",
+        "images/eucharistic-header.png",
         "calendar/index.html",
         "calendar/google.ics",
         "calendar/plain.ics",
@@ -118,6 +119,8 @@ def validate_text_files(site: Path) -> None:
     for path in sorted(path for path in site.rglob("*") if path.is_file()):
         relative = path.relative_to(site).as_posix()
         data = path.read_bytes()
+        if path.suffix.lower() == ".png":
+            continue
         try:
             text = data.decode("utf-8", errors="strict")
         except UnicodeError as exc:
@@ -129,6 +132,29 @@ def validate_text_files(site: Path) -> None:
         findings.extend(privacy_findings(relative, text))
     if findings:
         raise ValidationError("Privacy scan failed: " + "; ".join(findings))
+
+
+def validate_header_image(site: Path) -> None:
+    path = site / "images" / "eucharistic-header.png"
+    data = path.read_bytes()
+    if sha256(data) != (
+        "05d8d68a55132fa393a9aa7522a7264078fa3df4505438a1fa4b4328bfd079d6"
+    ):
+        raise ValidationError("Header image SHA-256 mismatch")
+    if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValidationError("Header image is not a PNG")
+    width = int.from_bytes(data[16:20], "big")
+    height = int.from_bytes(data[20:24], "big")
+    if (width, height) != (1261, 563):
+        raise ValidationError("Header image dimensions mismatch")
+    offset = 8
+    metadata_chunks = {b"tEXt", b"zTXt", b"iTXt", b"eXIf"}
+    while offset < len(data):
+        length = int.from_bytes(data[offset : offset + 4], "big")
+        chunk_type = data[offset + 4 : offset + 8]
+        if chunk_type in metadata_chunks:
+            raise ValidationError("Header image contains metadata")
+        offset += length + 12
 
 
 def validate_test_feed(site: Path) -> None:
@@ -308,6 +334,8 @@ def validate(
     required_root = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
+        'src="images/eucharistic-header.png"',
+        'alt="ご聖体と天使を描いた宗教画"',
         "日本固有の祝日",
         "現時点では",
         "Googleカレンダーをお使いの方",
@@ -372,6 +400,8 @@ def validate(
     )
     if any(value not in root_html for value in required_root):
         raise ValidationError("Root page is missing required publication text")
+    if root_html.index('src="images/eucharistic-header.png"') > root_html.index("<h1>"):
+        raise ValidationError("Header image is not positioned before the H1")
     if any(value not in calendar_html for value in required_calendar):
         raise ValidationError("Calendar page is missing required publication text")
     for label, text in (("root", root_html), ("calendar", calendar_html)):
@@ -451,6 +481,7 @@ def validate(
         )
 
     validate_test_feed(site)
+    validate_header_image(site)
     validate_text_files(site)
     return {
         "status": "passed",
