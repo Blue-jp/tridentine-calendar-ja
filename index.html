@@ -51,6 +51,8 @@
     .subscription-option { margin-top: 16px; }
     .subscription-option + .subscription-option { margin-top: 20px; }
     .url-label { margin: 0 0 4px; }
+    .calendar-embed { width: 100%; max-width: 800px; margin: 16px auto 0; }
+    .calendar-embed iframe { display: block; width: 100%; max-width: 100%; height: 600px; border: 0; }
     .note { padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--soft); }
     .detail-list { padding-left: 1.25rem; }
     .license-line { margin: 0; }
@@ -110,6 +112,14 @@
         <p class="copy-status" id="other-plain-copy-status" role="status" aria-live="polite"></p>
       </div>
       <p><small>更新の反映時期は、各アプリの再取得タイミングによって異なります。</small></p>
+    </section>
+
+    <section class="use-section" aria-labelledby="current-month-calendar">
+      <h2 id="current-month-calendar">今月の典礼暦</h2>
+      <p>現在の月の典礼暦を表示しています。予定を選ぶと詳細を確認できます。</p>
+      <div class="calendar-embed">
+        <iframe src="https://calendar.google.com/calendar/embed?src=e846dc62080fc280eddb965e67d7a801139f1cf0620c2bff213e9468b5997273%40group.calendar.google.com&ctz=Asia%2FTokyo" style="border: 0" width="800" height="600" frameborder="0" scrolling="no" title="今月の典礼暦"></iframe>
+      </div>
     </section>
 
     <h3>典礼情報について</h3>
