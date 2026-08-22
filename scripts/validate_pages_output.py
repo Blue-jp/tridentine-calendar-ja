@@ -301,44 +301,62 @@ def validate(
         "https://blue-jp.github.io/tridentine-calendar-ja/"
         "calendar/plain.ics"
     )
+    accepted_release_link = (
+        "https://github.com/Blue-jp/tridentine_calendar/releases/tag/"
+        "ja-localization-accepted-20260814"
+    )
     required_root = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
-        "Google Calendarをお使いの方",
-        "Google Calendarに追加",
+        "日本固有の祝日",
+        "現時点では",
+        "Googleカレンダーをお使いの方",
+        "Googleカレンダーに追加",
         google_calendar_link,
-        "iPhone・iPad・Macをお使いの方",
-        "Apple Calendarに追加",
+        "Apple標準のカレンダーをお使いの方",
+        "Apple標準のカレンダーに追加",
         f'href="{apple_calendar_link}"',
         apple_fallback_link,
         "その他のカレンダーアプリ",
+        "祝日・記念の解説リンクつきカレンダー",
+        "解説リンクなしカレンダー",
         "calendar/google.ics",
         "calendar/plain.ics",
         "2024～2034",
         "典礼情報について",
-        "先頭に「›」",
+        "他の典礼日が優先される祝日・記念",
         "詳細・ダウンロード",
-        "Accepted Release",
-        "福者シモン遠甫等殉教者",
-        "典礼上の確定値ではありません",
+        "年別カレンダー（ICS）と詳しい利用方法",
+        "手動ダウンロードとリリース情報（GitHub）",
+        accepted_release_link,
+        "Joe Antognini氏による",
+        "日本語ローカライズにおける変更",
         "joe-antognini/tridentine_calendar",
         "MIT License",
     )
     required_calendar = (
         "1960年ローマ典礼暦・日本語版",
         "1960 Roman Liturgical Calendar – Japanese Edition",
-        "Google Calendarに追加（推奨）",
+        "Googleカレンダーへの追加、固定URL購読",
+        "Googleカレンダーをお使いの方",
+        "Googleカレンダーに追加",
         google_calendar_link,
-        "Apple Calendarで使う",
-        "Apple Calendarに追加",
+        "Apple標準のカレンダーをお使いの方",
+        "Apple標準のカレンダーに追加",
         f'href="{apple_calendar_link}"',
         apple_fallback_link,
         "その他のカレンダーアプリで使う",
+        "祝日・記念の解説リンクつきカレンダー",
+        "解説リンクなしカレンダー",
         "google.ics",
         "plain.ics",
+        "年別カレンダー（ICS）をダウンロード",
         "2024～2034",
+        "解説リンク（HTML）あり",
         "福者シモン遠甫等殉教者",
+        "典礼上の確定値ではありません",
         "joe-antognini/tridentine_calendar",
+        "MIT License",
     )
     if any(value not in root_html for value in required_root):
         raise ValidationError("Root page is missing required publication text")
@@ -353,6 +371,54 @@ def validate(
             raise ValidationError(
                 f"{label} page is missing mobile button safeguards"
             )
+        if "#3d62ad" not in text or ":focus-visible" not in text:
+            raise ValidationError(
+                f"{label} page is missing accessible primary-button styling"
+            )
+        lowered = text.lstrip().lower()
+        if (
+            not lowered.startswith("<!doctype html>")
+            or text.count("<html") != 1
+            or text.count("</html>") != 1
+            or text.count("<body>") != 1
+            or text.count("</body>") != 1
+        ):
+            raise ValidationError(f"{label} page structure is invalid")
+    for year in YEARS:
+        for form in ("html", "plain"):
+            if f'href="by-year/{year}-{form}.ics"' not in calendar_html:
+                raise ValidationError(
+                    f"Calendar page is missing year link: {year} {form}"
+                )
+
+    def visible_text(text: str) -> str:
+        return re.sub(r"<[^>]+>", "", text)
+
+    root_visible = visible_text(root_html)
+    calendar_visible = visible_text(calendar_html)
+    accepted_tag = "ja-localization-accepted-20260814"
+    known_limitation = "福者シモン遠甫等殉教者"
+    if accepted_tag in root_visible or accepted_tag in calendar_visible:
+        raise ValidationError("Accepted tag is still displayed on a public page")
+    if known_limitation in root_visible:
+        raise ValidationError("Root page still displays the known limitation")
+    if known_limitation not in calendar_visible:
+        raise ValidationError("Calendar page lost the known limitation")
+    forbidden_visible_text = (
+        "Google Calendarをお使いの方",
+        ">Google Calendarに追加</a>",
+        ">Apple Calendarに追加</a>",
+        ">説明リンク付きICS</a>",
+        ">Plain ICS</a>",
+        "実地試験では即時反映を確認しました",
+        "Google Calendarではカレンダー全体を一色で表示します",
+        "各予定の説明欄には、典礼色と関連する解説リンクを掲載しています",
+        "<th>Year</th>",
+        "<th>HTML description</th>",
+        "<th>Plain description</th>",
+    )
+    if any(value in root_html or value in calendar_html for value in forbidden_visible_text):
+        raise ValidationError("Public page still contains replaced wording")
     forbidden_public_text = (
         "Subscription testing",
         "購読テスト中",

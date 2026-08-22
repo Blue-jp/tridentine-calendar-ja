@@ -13,6 +13,8 @@
       --line: #dadce0;
       --accent: #8f1d2c;
       --accent-dark: #701522;
+      --button: #3d62ad;
+      --button-hover: #2f4f8f;
       --link: #0757a6;
       --soft: #f7f8f9;
     }
@@ -34,10 +36,9 @@
     .use-section p { margin: 6px 0 10px; }
     .button { display: inline-block; min-height: 46px; margin: 6px 8px 4px 0; padding: 10px 15px; border: 1px solid var(--link); border-radius: 4px; color: var(--link); background: #fff; font-weight: 700; text-align: center; text-decoration: none; }
     .button:hover { background: #f3f7fc; }
-    .button.primary { border-color: var(--accent); color: #fff; background: var(--accent); }
-    .button.primary:hover { background: var(--accent-dark); }
-    .button.apple { border-color: #3c4043; color: #fff; background: #3c4043; }
-    .button.apple:hover { background: #202124; }
+    .button.primary, .button.apple { border-color: var(--button); color: #fff; background: var(--button); }
+    .button.primary:hover, .button.apple:hover { background: var(--button-hover); }
+    .button:focus-visible { outline: 3px solid #f2c94c; outline-offset: 3px; }
     .note { padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--soft); }
     .detail-list { padding-left: 1.25rem; }
     @media (max-width: 520px) {
@@ -50,46 +51,42 @@
   <header>
     <h1>1960年ローマ典礼暦・日本語版</h1>
     <p class="english-title" lang="en">1960 Roman Liturgical Calendar – Japanese Edition</p>
-    <p class="intro">1960年に改訂され、1962年版『ローマ・ミサ典書』に収録されたローマ典礼暦をもとにした日本語版です。日本固有の典礼日を含み、<strong>2024～2034</strong>年を収録しています。</p>
+    <p class="intro">1960年に改訂され、1962年版ローマ・ミサ典書に収録されたローマ典礼暦をもとにした日本語版です。日本固有の祝日を含み、現時点では<strong>2024～2034</strong>年を収録しています。</p>
   </header>
   <main>
     <section class="use-section" aria-labelledby="google-calendar">
-      <h2 id="google-calendar">Google Calendarをお使いの方</h2>
-      <p>公開カレンダーを追加すると、配布側の更新も購読カレンダーへ反映されます。通常はICSを再インポートする必要はありません。</p>
-      <a class="button primary" href="https://calendar.google.com/calendar/u/2?cid=ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMyYmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank" rel="noreferrer">Google Calendarに追加</a>
+      <h2 id="google-calendar">Googleカレンダーをお使いの方</h2>
+      <p>以下のボタンを押すと、カレンダーを追加できます。今後のカレンダーの更新は、追加後に自動的に反映されます。</p>
+      <a class="button primary" href="https://calendar.google.com/calendar/u/2?cid=ZTg0NmRjNjIwODBmYzI4MGVkZGI5NjVlNjdkN2E4MDExMzlmMWNmMDYyMGMyYmZmMjEzZTk0NjhiNTk5NzI3M0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank" rel="noreferrer">Googleカレンダーに追加</a>
     </section>
 
     <section class="use-section" aria-labelledby="apple-calendar">
-      <h2 id="apple-calendar">iPhone・iPad・Macをお使いの方</h2>
-      <p>Apple標準のカレンダーへ、更新を受け取れる照会カレンダーとして追加できます。</p>
-      <a class="button apple" href="webcal://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-label="Apple Calendarに照会カレンダーを追加">Apple Calendarに追加</a>
-      <p><small>ボタンから追加できない場合は、<a href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">Plain ICS URL</a>をApple Calendarの「照会カレンダー」として登録してください。更新の反映時期はApple Calendarの再取得タイミングによって異なります。</small></p>
+      <h2 id="apple-calendar">Apple標準のカレンダーをお使いの方</h2>
+      <p>以下のボタンを押すと、カレンダーを追加できます。今後のカレンダーの更新は、追加後に自動的に反映されます。</p>
+      <a class="button apple" href="webcal://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics" aria-label="Apple標準のカレンダーに照会カレンダーを追加">Apple標準のカレンダーに追加</a>
+      <p><small>ボタンから追加できない場合は、こちらの<a href="https://blue-jp.github.io/tridentine-calendar-ja/calendar/plain.ics">Plain ICS URL</a>をAppleカレンダーの「カレンダーを追加」→「照会カレンダーを追加」で入力してください。更新の反映時期は、Appleカレンダーの再取得タイミングにより異なります。</small></p>
     </section>
 
     <section class="use-section" aria-labelledby="other-apps">
       <h2 id="other-apps">その他のカレンダーアプリ</h2>
       <p>お使いのアプリで、次の固定URLを購読してください。</p>
-      <a class="button" href="calendar/google.ics">説明リンク付きICS</a>
-      <a class="button" href="calendar/plain.ics">Plain ICS</a>
+      <a class="button" href="calendar/google.ics">祝日・記念の解説リンクつきカレンダー</a>
+      <a class="button" href="calendar/plain.ics">解説リンクなしカレンダー</a>
       <p><small>更新の反映時期は、各アプリの再取得タイミングによって異なります。</small></p>
     </section>
 
     <h3>典礼情報について</h3>
-    <p>各予定の説明欄には、典礼色と関連する解説リンクを掲載しています。他の典礼日が優先する場合は、予定名の先頭に「›」を付けています。Google Calendarではカレンダー全体を一色で表示します。</p>
+    <p>他の典礼日が優先される祝日・記念には、予定名の先頭に「›」を付けています。</p>
 
     <h3>詳細・ダウンロード</h3>
     <ul class="detail-list">
-      <li><a href="calendar/">年別ICSと詳しい利用方法</a></li>
-      <li><a href="https://github.com/Blue-jp/tridentine_calendar/releases/tag/ja-localization-accepted-20260814">Accepted Releaseと手動ダウンロード</a></li>
-      <li>Accepted tag: <code>ja-localization-accepted-20260814</code></li>
+      <li><a href="calendar/">年別カレンダー（ICS）と詳しい利用方法</a></li>
+      <li><a href="https://github.com/Blue-jp/tridentine_calendar/releases/tag/ja-localization-accepted-20260814">手動ダウンロードとリリース情報（GitHub）</a></li>
     </ul>
 
-    <h3>既知の典礼上の制限事項</h3>
-    <p class="note">12月4日の「福者イエロニモ・デ・アンジェリス、福者シモン遠甫等殉教者」の1960年以後の正式等級は、典拠がないため確定していません。現在の内部rankはローダー既定値であり、典礼上の確定値ではありません。</p>
-
     <h3>このカレンダーについて</h3>
-    <p>Based on <a href="https://github.com/joe-antognini/tridentine_calendar">joe-antognini/tridentine_calendar</a>. Japanese development and distribution are maintained by <a href="https://github.com/Blue-jp/tridentine_calendar">Blue-jp</a>. Not every Japanese localization change has necessarily been merged into the upstream project.</p>
+    <p>Joe Antognini氏による<a href="https://github.com/joe-antognini/tridentine_calendar">joe-antognini/tridentine_calendar</a>を基に作成しています。<a href="https://github.com/Blue-jp/tridentine_calendar">Blue-jp</a>による日本語ローカライズにおける変更のすべてが、本家プロジェクトに反映されているとは限りません。</p>
   </main>
-  <footer>MIT License · Blue-jp</footer>
+  <footer><a href="LICENSE.txt">MIT License</a> · Blue-jp</footer>
 </body>
 </html>
