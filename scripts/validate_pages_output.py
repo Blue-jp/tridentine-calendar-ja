@@ -372,6 +372,9 @@ def validate(
         accepted_release_link,
         "Joe Antognini氏による",
         "日本語ローカライズにおける変更",
+        'class="license-line"',
+        'class="publication-note"',
+        'datetime="2026-08-22"',
         "joe-antognini/tridentine_calendar",
         "MIT License",
     )
@@ -407,6 +410,9 @@ def validate(
         "解説リンク（HTML）あり",
         "福者シモン遠甫等殉教者",
         "典礼上の確定値ではありません",
+        'class="license-line"',
+        'class="publication-note"',
+        'datetime="2026-08-22"',
         "joe-antognini/tridentine_calendar",
         "MIT License",
     )
@@ -477,6 +483,43 @@ def validate(
 
     root_visible = visible_text(root_html)
     calendar_visible = visible_text(calendar_html)
+    publication_text = "2026年8月22日　童貞聖マリアの汚れなき御心　ページ公開"
+    if root_visible.count(publication_text) != 1:
+        raise ValidationError("Root page publication note count mismatch")
+    if calendar_visible.count(publication_text) != 1:
+        raise ValidationError("Calendar page publication note count mismatch")
+    about_index = root_html.index("<h3>このカレンダーについて</h3>")
+    attribution_index = root_html.index("Joe Antognini氏による")
+    main_end_index = root_html.index("</main>")
+    footer_index = root_html.index("<footer>")
+    license_index = root_html.index('<p class="license-line">')
+    publication_index = root_html.index('<p class="publication-note">')
+    footer_end_index = root_html.index("</footer>")
+    if not (
+        about_index
+        < attribution_index
+        < main_end_index
+        < footer_index
+        < license_index
+        < publication_index
+        < footer_end_index
+    ):
+        raise ValidationError("Root page publication note position mismatch")
+    calendar_main_end_index = calendar_html.index("</main>")
+    calendar_footer_index = calendar_html.index("<footer>")
+    calendar_license_index = calendar_html.index('<p class="license-line">')
+    calendar_publication_index = calendar_html.index(
+        '<p class="publication-note">'
+    )
+    calendar_footer_end_index = calendar_html.index("</footer>")
+    if not (
+        calendar_main_end_index
+        < calendar_footer_index
+        < calendar_license_index
+        < calendar_publication_index
+        < calendar_footer_end_index
+    ):
+        raise ValidationError("Calendar page publication note position mismatch")
     accepted_tag = "ja-localization-accepted-20260814"
     known_limitation = "福者シモン遠甫等殉教者"
     if accepted_tag in root_visible or accepted_tag in calendar_visible:
